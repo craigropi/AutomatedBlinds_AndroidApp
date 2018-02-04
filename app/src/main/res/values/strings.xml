@@ -5,7 +5,9 @@
     <string name="ConnectToLightswitch">Connect To Lightswitch</string>
     <string name="RemoteLightswitch">Remote Lightswitch</string>
     <string name="AutomatedBlinds">Automated Blinds</string>
-    <string name="Up">UP</string>
-    <string name="Down">DOWN</string>
+    <string name="NudgeUp">NUDGE UP</string>
+    <string name="NudgeDown">NUDGE DOWN</string>
+    <string name="RollUp">ROLL UP</string>
+    <string name="RollDown">ROLL DOWN</string>
     <string name="ConnectToBlinds">Connect To Blinds</string>
 </resources>

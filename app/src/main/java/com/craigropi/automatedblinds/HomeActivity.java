@@ -24,6 +24,8 @@ public class HomeActivity extends AppCompatActivity {
 
     byte[] zeroByte = new byte[] {0};
     byte[] oneByte = new byte[] {1};
+    byte[] twoByte = new byte[] {2};
+    byte[] threeByte = new byte[] {3};
 
     public int mConnectionState = STATE_DISCONNECTED;
     private static final int STATE_DISCONNECTED = 0;
@@ -69,6 +71,16 @@ public class HomeActivity extends AppCompatActivity {
     /** Called when the user taps the Light button */
     public void nudgeDown(View view) {
         rollBlinds(oneByte);
+    }
+
+    /** Called when the user taps the Light button */
+    public void rollUp(View view) {
+        rollBlinds(twoByte);
+    }
+
+    /** Called when the user taps the Light button */
+    public void rollDown(View view) {
+        rollBlinds(threeByte);
     }
 
     //Actually flip the lightswitch either up (inputByte = {0}) or down (inputByte = {1})
