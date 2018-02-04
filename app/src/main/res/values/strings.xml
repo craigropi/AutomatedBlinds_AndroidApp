@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Automated Blinds</string>
+    <string name="Dark">Dark</string>
+    <string name="Light">Light</string>
+    <string name="ConnectToLightswitch">Connect To Lightswitch</string>
+    <string name="RemoteLightswitch">Remote Lightswitch</string>
+    <string name="AutomatedBlinds">Automated Blinds</string>
+    <string name="Up">UP</string>
+    <string name="Down">DOWN</string>
+    <string name="ConnectToBlinds">Connect To Blinds</string>
+</resources>
