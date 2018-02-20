@@ -19,7 +19,9 @@ import java.util.Set;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private BluetoothGatt mBluetoothGatt;
+    //private BluetoothGatt mBluetoothGatt;
+    private BluetoothGatt lightSwitchBluetoothGatt;
+    private BluetoothGatt blindsBluetoothGatt;
 
 
     byte[] zeroByte = new byte[] {0};
@@ -27,11 +29,16 @@ public class HomeActivity extends AppCompatActivity {
     byte[] twoByte = new byte[] {2};
     byte[] threeByte = new byte[] {3};
 
-    public int mConnectionState = STATE_DISCONNECTED;
+    //public int mConnectionState = STATE_DISCONNECTED;
+    public int lightSwitchConnectionState = STATE_DISCONNECTED;
+    public int blindsConnectionState = STATE_DISCONNECTED;
     private static final int STATE_DISCONNECTED = 0;
     private static final int STATE_CONNECTED = 2;
 
-    private int mServicesState = NOT_DISCOVERED;
+
+    //private int mServicesState = NOT_DISCOVERED;
+    private int lightSwitchServicesState = NOT_DISCOVERED;
+    private int blindsServicesState = NOT_DISCOVERED;
     private static final int NOT_DISCOVERED = 0;
     private static final int DISCOVERED = 1;
 
@@ -40,12 +47,12 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         //Automatically attempt to connect to the lightswitch when the app opens.
-        connectToBluetoothDevice("LED");
+        connectToBluetoothDevice("Remote Lightswitch");
     }
 
     // Called when the user taps the Connect to Lightswitch button
     public void connectToLightswitch(View view) {
-        connectToBluetoothDevice("LED");
+        connectToBluetoothDevice("Remote Lightswitch");
     }
 
     // Called when the user taps the Connect to Blinds button
@@ -86,17 +93,18 @@ public class HomeActivity extends AppCompatActivity {
     //Actually flip the lightswitch either up (inputByte = {0}) or down (inputByte = {1})
     private void flipSwitch(byte[] inputByte) {
         String flipAttemptResult = "Failed to flip switch";
-        String mServiceUUIDstring = "19b10000-e8f2-537e-4f6c-d104768a1214";
-        String mCharacteristicUUIDstring = "19b10001-e8f2-537e-4f6c-d104768a1214";
+        String mServiceUUIDstring = "19b10000-e8f2-537e-4f6c-d104768a8a8a";
+        String mCharacteristicUUIDstring = "19b10001-e8f2-537e-4f6c-d104768a8a8a";
 
         //Check to make sure the Remote Lightswitch is connected.
-        if (mConnectionState != STATE_CONNECTED) {
+        if (lightSwitchConnectionState != STATE_CONNECTED) {
             flipAttemptResult = "Remote Lightswitch is not connected";
-        } else if(mServicesState != DISCOVERED) {
+        } else if(lightSwitchServicesState != DISCOVERED) {
             //Check to make sure the BLE devices services finished being discovered before attempting to modify them.
             flipAttemptResult = "Could not retrieve Remote Lightswitch Bluetooth LE services";
         } else {
-            List<BluetoothGattService> gattServices = mBluetoothGatt.getServices();
+            //List<BluetoothGattService> gattServices = mBluetoothGatt.getServices();
+            List<BluetoothGattService> gattServices = lightSwitchBluetoothGatt.getServices();
             if (gattServices != null) {
                 //Loops through the BLE device's available services
                 for (BluetoothGattService gattService : gattServices) {
@@ -107,7 +115,7 @@ public class HomeActivity extends AppCompatActivity {
                         for (BluetoothGattCharacteristic gattCharacteristic : gattCharacteristics) {
                             String gattCharacteristicUuid = gattCharacteristic.getUuid().toString();
                             if (gattCharacteristicUuid.equals(mCharacteristicUUIDstring)) {
-                                //Setting this characteristic tells the Remote Blinds to roll
+                                //Setting this characteristic tells the Remote Lightswitch to Flip
                                 gattCharacteristic.setValue(inputByte);
                                 if (inputByte == zeroByte) {
                                     flipAttemptResult = "Let there be Light!";
@@ -115,7 +123,8 @@ public class HomeActivity extends AppCompatActivity {
                                     flipAttemptResult = "Is this darkness in you too?";
                                 }
                             }
-                            mBluetoothGatt.writeCharacteristic(gattCharacteristic);
+                            //mBluetoothGatt.writeCharacteristic(gattCharacteristic);
+                            lightSwitchBluetoothGatt.writeCharacteristic(gattCharacteristic);
                         }
                     }
                 }
@@ -130,14 +139,15 @@ public class HomeActivity extends AppCompatActivity {
         String mServiceUUIDstring = "19b10000-e8f2-537e-4f6c-d104768a1214";
         String mCharacteristicUUIDstring = "19b10001-e8f2-537e-4f6c-d104768a1214";
 
-        //Check to make sure the Remote Lightswitch is connected.
-        if (mConnectionState != STATE_CONNECTED) {
-            rollAttemptResult = "Remote Blinds are not connected";
-        } else if(mServicesState != DISCOVERED) {
+        //Check to make sure the Automated Blinds are connected.
+        if (blindsConnectionState != STATE_CONNECTED) {
+            rollAttemptResult = "Automated Blinds are not connected";
+        } else if(blindsServicesState != DISCOVERED) {
             //Check to make sure the BLE devices services finished being discovered before attempting to modify them.
-            rollAttemptResult = "Could not retrieve Remote Blinds Bluetooth LE services";
+            rollAttemptResult = "Could not retrieve Automated Blinds Bluetooth LE services";
         } else {
-            List<BluetoothGattService> gattServices = mBluetoothGatt.getServices();
+            //List<BluetoothGattService> gattServices = mBluetoothGatt.getServices();
+            List<BluetoothGattService> gattServices = blindsBluetoothGatt.getServices();
             if (gattServices != null) {
                 //Loops through the BLE device's available services
                 for (BluetoothGattService gattService : gattServices) {
@@ -148,7 +158,7 @@ public class HomeActivity extends AppCompatActivity {
                         for (BluetoothGattCharacteristic gattCharacteristic : gattCharacteristics) {
                             String gattCharacteristicUuid = gattCharacteristic.getUuid().toString();
                             if (gattCharacteristicUuid.equals(mCharacteristicUUIDstring)) {
-                                //Setting this characteristic tells the Remote Lightswitch to flip its Servo motor
+                                //Setting this characteristic tells the Automated Blinds to roll
                                 gattCharacteristic.setValue(inputByte);
                                 if (inputByte == zeroByte) {
                                     rollAttemptResult = "Let there be Light!";
@@ -156,7 +166,8 @@ public class HomeActivity extends AppCompatActivity {
                                     rollAttemptResult = "Is this darkness in you too?";
                                 }
                             }
-                            mBluetoothGatt.writeCharacteristic(gattCharacteristic);
+                            //mBluetoothGatt.writeCharacteristic(gattCharacteristic);
+                            blindsBluetoothGatt.writeCharacteristic(gattCharacteristic);
                         }
                     }
                 }
@@ -181,8 +192,15 @@ public class HomeActivity extends AppCompatActivity {
                 for (BluetoothDevice device : pairedDevices) {
                     if(device.getName().equals(blueDeviceName)) {
                         //connectionResult = "Remote Lightswitch is paired, but will not respond";
-                        mBluetoothGatt = device.connectGatt(this, true, mGattCallback);
-                        return;
+                        if(blueDeviceName.equals("Remote Lightswitch")) {
+                            lightSwitchBluetoothGatt = device.connectGatt(this, true, lightSwitchGattCallback);
+                            return;
+                        } else if (blueDeviceName.equals("Automated Blinds")) {
+                            blindsBluetoothGatt = device.connectGatt(this, true, blindsGattCallback);
+                            return;
+                        }
+                        //mBluetoothGatt = device.connectGatt(this, true, mGattCallback);
+                        //return;
                     }
                 }
             } else {
@@ -197,24 +215,46 @@ public class HomeActivity extends AppCompatActivity {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 
-    private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
+    private final BluetoothGattCallback lightSwitchGattCallback = new BluetoothGattCallback() {
 
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             if (newState == BluetoothProfile.STATE_CONNECTED) {
-                mConnectionState = STATE_CONNECTED;
+                lightSwitchConnectionState = STATE_CONNECTED;
                 gatt.discoverServices();
             } else {
-                mConnectionState = STATE_DISCONNECTED;
+                lightSwitchConnectionState = STATE_DISCONNECTED;
             }
         }
 
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
-                mServicesState = DISCOVERED;
+                lightSwitchServicesState = DISCOVERED;
             } else {
-                mServicesState = NOT_DISCOVERED;
+                lightSwitchServicesState = NOT_DISCOVERED;
+            }
+        }
+    };
+
+    private final BluetoothGattCallback blindsGattCallback = new BluetoothGattCallback() {
+
+        @Override
+        public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+            if (newState == BluetoothProfile.STATE_CONNECTED) {
+                blindsConnectionState = STATE_CONNECTED;
+                gatt.discoverServices();
+            } else {
+                blindsConnectionState = STATE_DISCONNECTED;
+            }
+        }
+
+        @Override
+        public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+                blindsServicesState = DISCOVERED;
+            } else {
+                blindsServicesState = NOT_DISCOVERED;
             }
         }
     };
