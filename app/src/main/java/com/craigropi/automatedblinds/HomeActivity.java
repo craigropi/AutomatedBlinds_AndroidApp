@@ -86,9 +86,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     /** Called when the user taps the Light button */
-    public void rollDown(View view) {
-        rollBlinds(threeByte);
-    }
+    public void rollDown(View view) {rollBlinds(threeByte); }
 
     //Actually flip the lightswitch either up (inputByte = {0}) or down (inputByte = {1})
     private void flipSwitch(byte[] inputByte) {
